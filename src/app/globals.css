@@ -1,26 +1,141 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --font-sans: var(--font-plex-sans-jp), sans-serif;
+  --font-mono: var(--font-plex-mono), monospace;
+  --color-bg: #050a0e;
+  --color-bg-raised: #0a1218;
+  --color-cyan: #00eaff;
+  --color-cyan-soft: #7df3ff;
+  --color-cyan-deep: #0e8b9c;
+  --color-ink: #e6f2f5;
+  --color-ink-dim: #9db4bc;
+  --color-ink-faint: #627982;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --bg: #050a0e;
+    --bg-raised: #0a1218;
+    --line: rgba(158, 199, 212, 0.16);
+    --line-strong: rgba(158, 199, 212, 0.34);
+    --cyan: #00eaff;
+    --cyan-soft: #7df3ff;
+    --cyan-deep: #0e8b9c;
+    --ink: #e6f2f5;
+    --ink-dim: #9db4bc;
+    --ink-faint: #627982;
+    
+    --bevel: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+    --bevel-lg: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 0 100%);
+    
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  
+  body {
+    background-color: var(--bg);
+    color: var(--ink);
+    background-image: 
+      linear-gradient(to right, rgba(158, 199, 212, 0.025) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(158, 199, 212, 0.025) 1px, transparent 1px);
+    background-size: 32px 32px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .bevel-card {
+    background-color: var(--bg-raised);
+    clip-path: var(--bevel);
+    position: relative;
+  }
+  
+  .bevel-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    background: var(--line);
+    clip-path: var(--bevel);
+    -webkit-mask: 
+      linear-gradient(#fff 0 0) content-box, 
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    transition: background 0.25s var(--ease);
+  }
+
+  .bevel-card-hover:hover::before {
+    background: var(--cyan);
+  }
+
+  .btn {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    padding: 0.75rem 1.6rem;
+    border: 1px solid transparent;
+    display: inline-block;
+    transition: background-color 0.2s var(--ease), border-color 0.2s var(--ease), color 0.2s var(--ease);
+  }
+  .btn-primary {
+    background: var(--cyan);
+    color: #02171b;
+    clip-path: var(--bevel);
+    font-weight: 600;
+  }
+  .btn-primary:hover {
+    background: var(--cyan-soft);
+    box-shadow: 0 0 12px rgba(0, 234, 255, 0.4);
+  }
+  .btn-ghost {
+    border-color: var(--line-strong);
+    color: var(--ink);
+    clip-path: var(--bevel);
+  }
+  .btn-ghost:hover {
+    border-color: var(--cyan);
+    color: var(--cyan-soft);
+  }
+
+  .text-cyan-glow {
+    text-shadow: 0 0 10px rgba(0, 234, 255, 0.45);
+  }
 }
+
+/* Custom MDX Typography Overrides */
+.prose h1, .prose h2, .prose h3 {
+  color: var(--ink) !important;
+  font-family: var(--font-mono) !important;
+  letter-spacing: 0.04em;
+}
+.prose h2 {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 0.5rem;
+  margin-top: 2.5rem !important;
+}
+.prose blockquote {
+  border-left-color: var(--cyan) !important;
+  background: var(--bg-raised);
+  padding: 1rem 1.5rem !important;
+  font-style: normal !important;
+  color: var(--ink-dim) !important;
+  clip-path: var(--bevel);
+}
+.prose a {
+  color: var(--cyan-soft) !important;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.prose a:hover {
+  color: var(--cyan) !important;
+}
+.prose code {
+  color: var(--cyan-soft) !important;
+  font-family: var(--font-mono) !important;
+  background: var(--bg-raised);
+  padding: 0.2rem 0.4rem;
+  border-radius: 2px;
+}
+
